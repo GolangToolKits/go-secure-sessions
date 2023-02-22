@@ -1,7 +1,4 @@
 mode: set
-github.com/GolangToolKits/go-secure-sessions/cookieSession.go:23.53,25.2 0 0
-github.com/GolangToolKits/go-secure-sessions/cookieSession.go:28.45,30.2 1 0
-github.com/GolangToolKits/go-secure-sessions/cookieSession.go:33.76,35.2 1 0
 github.com/GolangToolKits/go-secure-sessions/sessionManager.go:37.88,41.16 4 1
 github.com/GolangToolKits/go-secure-sessions/sessionManager.go:50.2,50.20 1 1
 github.com/GolangToolKits/go-secure-sessions/sessionManager.go:41.16,47.3 4 1
@@ -42,3 +39,11 @@ github.com/GolangToolKits/go-secure-sessions/sessionManager.go:150.20,152.21 2 1
 github.com/GolangToolKits/go-secure-sessions/sessionManager.go:152.21,154.22 2 1
 github.com/GolangToolKits/go-secure-sessions/sessionManager.go:154.22,159.9 3 1
 github.com/GolangToolKits/go-secure-sessions/sessionManager.go:166.11,168.3 1 1
+github.com/GolangToolKits/go-secure-sessions/cookieSession.go:23.52,24.21 1 1
+github.com/GolangToolKits/go-secure-sessions/cookieSession.go:27.2,27.23 1 1
+github.com/GolangToolKits/go-secure-sessions/cookieSession.go:24.21,26.3 1 1
+github.com/GolangToolKits/go-secure-sessions/cookieSession.go:31.45,33.21 2 1
+github.com/GolangToolKits/go-secure-sessions/cookieSession.go:38.2,38.12 1 1
+github.com/GolangToolKits/go-secure-sessions/cookieSession.go:33.21,35.3 1 1
+github.com/GolangToolKits/go-secure-sessions/cookieSession.go:35.8,37.3 1 1
+github.com/GolangToolKits/go-secure-sessions/cookieSession.go:42.76,44.2 1 0

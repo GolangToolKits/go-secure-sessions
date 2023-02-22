@@ -21,16 +21,26 @@ type CookieSession struct {
 
 // Set Set
 func (s *CookieSession) Set(key string, value any) {
-
+	if s.values == nil {
+		s.values = make(map[any]any)
+	}
+	s.values[key] = value
 }
 
 // Get Get
 func (s *CookieSession) Get(key string) any {
-	return nil
+	var rtn any
+	if s.values == nil {
+		s.values = make(map[any]any)
+	} else {
+		rtn = s.values[key]
+	}
+	return rtn
 }
 
 // Save Save
 func (s *CookieSession) Save(r *http.Request, w http.ResponseWriter) error {
+
 	return nil
 }
 
