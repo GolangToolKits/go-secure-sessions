@@ -16,18 +16,13 @@ const (
 
 // SessionManager SessionManager
 type SessionManager interface {
-	//stores in map when built
 	NewSession(r *http.Request, name string) Session
-
-	//gets from map first the reads value from req
-	GetSession(r *http.Request, name string) (Session, error)
 }
 
 // Manager Manager
 type Manager struct {
-	//secretKey string
 	cookies cok.Cookies
-	config  *ConfigOptions
+	config  ConfigOptions
 }
 
 // NewSessionManager securekey must be at least 16 char long
@@ -40,9 +35,8 @@ func NewSessionManager(secretKey string, config ConfigOptions) (SessionManager, 
 	cookies, err := cok.NewCookies(secretKey)
 	if err == nil {
 		var m Manager
-		//rtn.secretKey = secretKey
 		m.cookies = cookies
-		m.config = &config
+		m.config = config
 		rtn = &m
 	} else {
 		rtnErr = err
@@ -51,19 +45,18 @@ func NewSessionManager(secretKey string, config ConfigOptions) (SessionManager, 
 }
 
 // NewSession NewSession
+// Gets session from request if one exists
+// Creates a new session if one doesn't exist in request
 func (m *Manager) NewSession(r *http.Request, name string) Session {
 	var rtn Session
 	if m.config.sessionType == cookieSession {
-		//----------fses, err := m.cookies.Read(r, name)
-		eses, err := m.GetSession(r, name)
+		eses, err := m.getSession(r, name)
 		if eses != nil && err == nil {
 			rtn = eses
 		} else {
 			var ses CookieSession
-			//cookies, err := cok.NewCookies(m.secretKey)
-			ses.cookies = m.cookies
+			ses.manager = m
 			ses.name = name
-			ses.domain = m.config.domain
 			if m.config.path == "" {
 				ses.path = "/"
 			} else {
@@ -77,8 +70,30 @@ func (m *Manager) NewSession(r *http.Request, name string) Session {
 	return rtn
 }
 
+// SaveSession Saves the Session to a secure cookie
+func (m *Manager) saveSession(w http.ResponseWriter, s Session) bool {
+	var rtn bool
+	if s != nil {
+		cs := s.(*CookieSession)
+		ss, err := m.serializeSession(s)
+		if err == nil {
+			var ck http.Cookie
+			ck.Name = cs.name
+			ck.Value = ss
+			ck.Path = cs.path
+			ck.MaxAge = cs.maxAge
+			ck.Domain = cs.domain
+			err := m.cookies.Write(w, ck)
+			if err == nil {
+				rtn = true
+			}
+		}
+	}
+	return rtn
+}
+
 // GetSession GetSession
-func (m *Manager) GetSession(r *http.Request, name string) (Session, error) {
+func (m *Manager) getSession(r *http.Request, name string) (Session, error) {
 	var rtn Session
 	var rtnErr error
 	sc, err := m.cookies.Read(r, name)
@@ -153,7 +168,8 @@ func (m *Manager) deserializeSession(ss string) (Session, error) {
 							err := decoder.Decode(&cses.values)
 							if err == nil {
 								//cookies, err := cok.NewCookies(secretKey)
-								cses.cookies = m.cookies
+								//cses.cookies = m.cookies
+								cses.manager = m
 								esus = true
 								rtn = &cses
 							}

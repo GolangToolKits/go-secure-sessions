@@ -1,6 +1,7 @@
 package gosecuresessions
 
 import (
+	"encoding/gob"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -22,11 +23,11 @@ func TestManager_serializeSession(t *testing.T) {
 	cs.values["test1"] = "test11111"
 	cs.values["test2"] = "test22222"
 	cs.path = "/"
-	cs.cookies = cookies
+	//cs.cookies = cookies
 
 	type fields struct {
 		cookies cok.Cookies
-		config  *ConfigOptions
+		config  ConfigOptions
 	}
 	type args struct {
 		s Session
@@ -105,7 +106,7 @@ func TestManager_GetSession(t *testing.T) {
 	cs.values["test1"] = "test11111"
 	cs.values["test2"] = "test22222"
 	cs.path = "/"
-	cs.cookies = cookies
+	//cs.cookies = cookies
 
 	var tman Manager
 	tman.cookies = cookies
@@ -147,7 +148,7 @@ func TestManager_GetSession(t *testing.T) {
 
 	type fields struct {
 		cookies cok.Cookies
-		config  *ConfigOptions
+		config  ConfigOptions
 	}
 	type args struct {
 		r    *http.Request
@@ -201,7 +202,7 @@ func TestManager_GetSession(t *testing.T) {
 				cookies: tt.fields.cookies,
 				config:  tt.fields.config,
 			}
-			got, err := m.GetSession(tt.args.r, tt.args.name)
+			got, err := m.getSession(tt.args.r, tt.args.name)
 			if tt.name == "test 1" && (err != nil) != tt.wantErr {
 				t.Errorf("Manager.GetSession() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -270,7 +271,6 @@ func TestManager_NewSession(t *testing.T) {
 
 	tr, _ := http.NewRequest("POST", "/test/test1", nil)
 
-
 	///test 3--------
 
 	tr3, _ := http.NewRequest("POST", "/test/test1", nil)
@@ -283,7 +283,7 @@ func TestManager_NewSession(t *testing.T) {
 	cs.values["test1"] = "test11111"
 	cs.values["test2"] = "test22222"
 	cs.path = "/"
-	cs.cookies = cookies
+	//cs.cookies = cookies
 
 	var tman Manager
 	tman.cookies = cookies
@@ -305,12 +305,11 @@ func TestManager_NewSession(t *testing.T) {
 		tr3.AddCookie(cook[0])
 	}
 
-
 	///end test 3
 
 	type fields struct {
 		cookies cok.Cookies
-		config  *ConfigOptions
+		config  ConfigOptions
 	}
 	type args struct {
 		r    *http.Request
@@ -327,7 +326,7 @@ func TestManager_NewSession(t *testing.T) {
 			name: "test 1",
 			fields: fields{
 				cookies: cookies,
-				config: &ConfigOptions{
+				config: ConfigOptions{
 					path:   "/",
 					maxAge: 3600,
 				},
@@ -341,7 +340,7 @@ func TestManager_NewSession(t *testing.T) {
 			name: "test 2",
 			fields: fields{
 				cookies: cookies,
-				config: &ConfigOptions{
+				config: ConfigOptions{
 					path:   "",
 					maxAge: 3600,
 				},
@@ -355,7 +354,7 @@ func TestManager_NewSession(t *testing.T) {
 			name: "test 3",
 			fields: fields{
 				cookies: cookies,
-				config: &ConfigOptions{
+				config: ConfigOptions{
 					path:   "/",
 					maxAge: 3600,
 				},
@@ -374,6 +373,92 @@ func TestManager_NewSession(t *testing.T) {
 			}
 			if got := m.NewSession(tt.args.r, tt.args.name); got == nil {
 				t.Errorf("Manager.NewSession() = %v, want %v", got, tt.want)
+			}
+
+		})
+	}
+}
+
+func TestManager_saveSession(t *testing.T) {
+	cookies, err := cok.NewCookies("dsdfs6dfs61dssdfsdfdsdsfsdsdllsd")
+	tw := httptest.NewRecorder()
+	tr, _ := http.NewRequest("POST", "/test/test1", nil)
+
+	type TestObj struct {
+		ID   int64
+		Name string
+		Age  int64
+	}
+	var tobj TestObj
+	tobj.ID = 21
+	tobj.Name = "Hacker"
+	tobj.Age = 16
+	gob.Register(TestObj{})
+
+	var cs CookieSession
+	cs.maxAge = 3600
+	cs.name = "test_session"
+	cs.values = make(map[any]any)
+	cs.values["test1"] = "test11111"
+	cs.values["test2"] = "test22222"
+	cs.values["test3"] = tobj
+	cs.path = "/"
+
+	if err != nil {
+		fmt.Println("cookie err: ", err)
+	}
+
+	type fields struct {
+		cookies cok.Cookies
+		config  ConfigOptions
+	}
+	type args struct {
+		w http.ResponseWriter
+		s Session
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   bool
+	}{
+		// TODO: Add test cases.
+		{
+			name: "test 1",
+			fields: fields{
+				cookies: cookies,
+			},
+			args: args{
+				w: tw,
+				s: &cs,
+			},
+			want: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			m := &Manager{
+				cookies: tt.fields.cookies,
+				config:  tt.fields.config,
+			}
+			if got := m.saveSession(tt.args.w, tt.args.s); got != tt.want {
+				t.Errorf("Manager.saveSession() = %v, want %v", got, tt.want)
+			}
+
+			//cookies.Write(tw, cookie)
+			cook := tw.Result().Cookies()
+			if len(cook) > 0 {
+				tr.AddCookie(cook[0])
+			}
+			ses := m.NewSession(tr, "test_session")
+			if ses.Get("test2") != "test22222" {
+				t.Fail()
+			}
+
+			obj := ses.Get("test3")
+			ob := obj.(TestObj)
+			if ob.ID != 21 || ob.Name != "Hacker" || ob.Age != 16 {
+				t.Fail()
 			}
 		})
 	}

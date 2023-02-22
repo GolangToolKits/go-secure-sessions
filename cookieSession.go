@@ -1,25 +1,23 @@
 package gosecuresessions
 
 import (
+	"errors"
 	"net/http"
-
-	cok "github.com/GolangToolKits/go-secure-cookies"
+	//cok "github.com/GolangToolKits/go-secure-cookies"
 )
 
 // CookieSession CookieSession
 type CookieSession struct {
-	id   string
-	name string
-	// store   Store
+	id      string
+	name    string
 	values  map[any]any
-	cookies cok.Cookies
-	// secretKey string
-	path   string
-	domain string
-	maxAge int
+	manager *Manager
+	path    string
+	domain  string
+	maxAge  int
 }
 
-// Set Set
+// Set Set values
 func (s *CookieSession) Set(key string, value any) {
 	if s.values == nil {
 		s.values = make(map[any]any)
@@ -27,7 +25,7 @@ func (s *CookieSession) Set(key string, value any) {
 	s.values[key] = value
 }
 
-// Get Get
+// Get Get values
 func (s *CookieSession) Get(key string) any {
 	var rtn any
 	if s.values == nil {
@@ -38,23 +36,12 @@ func (s *CookieSession) Get(key string) any {
 	return rtn
 }
 
-// Save Save
-func (s *CookieSession) Save(r *http.Request, w http.ResponseWriter) error {
-
-	return nil
+// Save Save session
+func (s *CookieSession) Save(w http.ResponseWriter) error {
+	var rtnErr = errors.New("Warning: Failed to save session")
+	suc := s.manager.saveSession(w, s)
+	if suc {
+		rtnErr = nil
+	}
+	return rtnErr
 }
-
-// // Save Save
-// func (s *SecureSession) Save(r *http.Request, w http.ResponseWriter) bool {
-// 	return false
-// }
-
-// // Name Name
-// func (s *SecureSession) Name() string {
-// 	return ""
-// }
-
-// // Store Store
-// func (s *SecureSession) Store() SessionStore {
-// 	return nil
-// }
