@@ -1,8 +1,8 @@
 # go-secure-sessions
 A new session module to replace gorilla/sessions.
-This go-secure-sessions is not dependant on any router
+This go-secure-sessions is not dependant on any router.
 
-Uses AES-128, AES-192, or AES-256 to store cookie sessions.
+Uses AES-128, AES-192, or AES-256 to store sessions as cookies.
 
 
 ### Using go-secure-sessions
@@ -51,14 +51,15 @@ Uses AES-128, AES-192, or AES-256 to store cookie sessions.
     session.Set("test2", "some test2 value")
     session.Set("test3", obj)
     // save the session before quitting or the values will be lost
-    // session is saved securily as a cookie in the user's browser
+    // session is saved securly as a cookie in the user's browser
     err:= session.Save(w)
     if err != nil{
-        log.Println("Sesion not saved")
+        log.Println("Session not saved")
     }
 
     // Read a value out of the session
     v1:= session.Get("test1")
+    fmt.Println(v1)
 
 
 ```
