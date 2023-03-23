@@ -1,2 +1,4 @@
 github.com/GolangToolKits/go-secure-cookies v1.0.0 h1:cM+6t5W9bMD8+9Z/iy4BQO7sQGuFhelESRD0TIekU1c=
 github.com/GolangToolKits/go-secure-cookies v1.0.0/go.mod h1:vXAd7G/ujrJF40tRjaTu/Kav+D/T8VGYfkPIVRh90WE=
+github.com/GolangToolKits/go-secure-cookies v1.0.1 h1:qv+xaROGXofekf3tQR5CAPsPqjH/b2sU0DwSXSWmf4M=
+github.com/GolangToolKits/go-secure-cookies v1.0.1/go.mod h1:1tdoLcLacIoKRhzZ/TRk2dbE1EMeQWeYjYottM9wfLs=
