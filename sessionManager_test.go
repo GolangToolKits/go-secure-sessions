@@ -231,8 +231,8 @@ func TestNewSessionManager(t *testing.T) {
 			args: args{
 				secretKey: "dsdfs6dfs61dssdfsdfdsdsfsdsdllsd",
 				config: ConfigOptions{
-					path:   "/",
-					maxAge: 3600,
+					Path:   "/",
+					MaxAge: 3600,
 				},
 			},
 			wantErr: false,
@@ -242,8 +242,8 @@ func TestNewSessionManager(t *testing.T) {
 			args: args{
 				secretKey: "dsdfs6",
 				config: ConfigOptions{
-					path:   "/",
-					maxAge: 3600,
+					Path:   "/",
+					MaxAge: 3600,
 				},
 			},
 			wantErr: true,
@@ -327,8 +327,8 @@ func TestManager_NewSession(t *testing.T) {
 			fields: fields{
 				cookies: cookies,
 				config: ConfigOptions{
-					path:   "/",
-					maxAge: 3600,
+					Path:   "/",
+					MaxAge: 3600,
 				},
 			},
 			args: args{
@@ -341,8 +341,8 @@ func TestManager_NewSession(t *testing.T) {
 			fields: fields{
 				cookies: cookies,
 				config: ConfigOptions{
-					path:   "",
-					maxAge: 3600,
+					Path:   "",
+					MaxAge: 3600,
 				},
 			},
 			args: args{
@@ -355,8 +355,8 @@ func TestManager_NewSession(t *testing.T) {
 			fields: fields{
 				cookies: cookies,
 				config: ConfigOptions{
-					path:   "/",
-					maxAge: 3600,
+					Path:   "/",
+					MaxAge: 3600,
 				},
 			},
 			args: args{

@@ -107,7 +107,7 @@ func TestCookieSession_Get(t *testing.T) {
 
 func TestCookieSession_Save(t *testing.T) {
 	var cf ConfigOptions
-	cf.maxAge = 3600
+	cf.MaxAge = 3600
 	m, err := NewSessionManager("dsdfs6dfs61dssdfsdfdsdsfsdsdllsd", cf)
 	if err != nil {
 		fmt.Println(err)

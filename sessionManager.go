@@ -49,7 +49,7 @@ func NewSessionManager(secretKey string, config ConfigOptions) (SessionManager, 
 // Creates a new session if one doesn't exist in request
 func (m *Manager) NewSession(r *http.Request, name string) Session {
 	var rtn Session
-	if m.config.sessionType == cookieSession {
+	if m.config.SessionType == cookieSession {
 		eses, err := m.getSession(r, name)
 		if eses != nil && err == nil {
 			rtn = eses
@@ -57,12 +57,12 @@ func (m *Manager) NewSession(r *http.Request, name string) Session {
 			var ses CookieSession
 			ses.manager = m
 			ses.name = name
-			if m.config.path == "" {
+			if m.config.Path == "" {
 				ses.path = "/"
 			} else {
-				ses.path = m.config.path
+				ses.path = m.config.Path
 			}
-			ses.maxAge = m.config.maxAge
+			ses.maxAge = m.config.MaxAge
 			ses.values = make(map[any]any)
 			rtn = &ses
 		}
